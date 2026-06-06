@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mate Radovčić — Industrial Python & Flask Consultant</title>
+<meta name="description" content="Custom web applications for pharmaceutical and industrial operations. GMP-aware Flask development across the EU.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #08090A;
+    --bg-soft:   #0F1112;
+    --surface:   #15181A;
+    --surface-2: #1C2023;
+    --line:      rgba(255,255,255,.10);
+    --line-soft: rgba(255,255,255,.055);
+    --text:      #FBFBF9;
+    --text-mid:  #B4B8BD;
+    --text-dim:  #767B82;
+    --lime:      #CDFF4A;
+    --lime-dim:  #A6CC3B;
+    --warm:      #FF7A52;
+    --cyan:      #5EE0D0;
+  }
+
+  * , *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+  body {
+    font-family: 'Geist', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    line-height: 1.5;
+  }
+
+  /* ── ATMOSPHERIC GLOW ── */
+  .glow {
+    position: fixed; pointer-events: none; z-index: 0;
+    border-radius: 50%; filter: blur(130px); opacity: .6;
+  }
+  .glow-1 { top: -12%; right: -8%; width: 620px; height: 620px;
+            background: radial-gradient(circle, rgba(205,255,74,.22), transparent 70%); }
+  .glow-2 { bottom: 5%; left: -12%; width: 720px; height: 720px;
+            background: radial-gradient(circle, rgba(255,122,82,.13), transparent 70%); }
+  .glow-3 { top: 40%; left: 40%; width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(94,224,208,.07), transparent 70%); }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 2.5rem; }
+
+  /* ── GRAIN ── */
+  body::after {
+    content:''; position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: .025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  main, nav, footer { position: relative; z-index: 2; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    backdrop-filter: blur(16px); background: rgba(10,10,11,.6);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 1.1rem 2.5rem; max-width: 1180px; margin: 0 auto; }
+  .logo { display: flex; align-items: center; gap: .6rem; font-family: 'Geist Mono', monospace; font-size: .8rem; letter-spacing: .05em; color: var(--text); text-decoration: none; }
+  .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 12px var(--lime); }
+  .nav-links { display: flex; gap: 2.4rem; list-style: none; }
+  .nav-links a { font-size: .85rem; color: var(--text-mid); text-decoration: none; transition: color .2s; letter-spacing: .01em; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta {
+    font-size: .82rem; font-weight: 500; padding: .55rem 1.3rem;
+    background: var(--lime); color: #0A0A0B; border-radius: 100px; text-decoration: none;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(196,240,66,.3); }
+
+  /* ── HERO ── */
+  .hero { padding: 11rem 0 6rem; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: .6rem; margin-bottom: 2rem;
+    font-family: 'Geist Mono', monospace; font-size: .73rem; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--text-mid); padding: .4rem .9rem; border: 1px solid var(--line); border-radius: 100px;
+    background: var(--surface);
+  }
+  .hero-tag .ping { width: 6px; height: 6px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 8px var(--lime); }
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(3rem, 7vw, 6rem); font-weight: 400; line-height: .98; letter-spacing: -.025em;
+    margin-bottom: 1.8rem; max-width: 16ch;
+  }
+  h1 em { font-style: italic; color: var(--lime); }
+  .hero-lead { font-size: 1.2rem; font-weight: 300; color: var(--text-mid); max-width: 560px; line-height: 1.65; margin-bottom: 2.6rem; }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: .55rem;
+    font-size: .92rem; font-weight: 500; padding: .95rem 1.8rem; border-radius: 100px;
+    text-decoration: none; transition: transform .2s, box-shadow .2s, background .2s, border-color .2s; cursor: pointer; border: none;
+  }
+  .btn-primary { background: var(--lime); color: #0A0A0B; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(196,240,66,.32); }
+  .btn-line { background: transparent; color: var(--text); border: 1px solid var(--line); }
+  .btn-line:hover { border-color: var(--text-mid); transform: translateY(-2px); }
+
+  /* ── MARQUEE / TRUST ── */
+  .marquee { margin-top: 5rem; padding-top: 2.5rem; border-top: 1px solid var(--line-soft); }
+  .marquee-label { font-family: 'Geist Mono', monospace; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 1.5rem; }
+  .tech-row { display: flex; flex-wrap: wrap; gap: 1rem 2.4rem; align-items: center; }
+  .tech-row span { font-family: 'Geist Mono', monospace; font-size: .95rem; color: var(--text-mid); transition: color .2s; }
+  .tech-row span:hover { color: var(--lime); }
+
+  /* ── SECTION HEADERS ── */
+  section { padding: 7rem 0; }
+  .sec-head { margin-bottom: 4rem; max-width: 680px; }
+  .sec-num { font-family: 'Geist Mono', monospace; font-size: .75rem; color: var(--lime-dim); letter-spacing: .1em; margin-bottom: 1rem; display: block; }
+  h2 { font-family: 'Fraunces', serif; font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 400; line-height: 1.08; letter-spacing: -.02em; margin-bottom: 1.2rem; }
+  .sec-sub { font-size: 1.08rem; font-weight: 300; color: var(--text-mid); line-height: 1.65; }
+
+  /* ── SERVICES ── */
+  .svc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2rem; }
+  .svc {
+    padding: 2.4rem; background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+    transition: transform .35s cubic-bezier(.2,.8,.2,1), border-color .35s, background .35s, box-shadow .35s;
+    position: relative; overflow: hidden;
+  }
+  .svc::before {
+    content: ''; position: absolute; top: 0; left: 1.5rem; right: 1.5rem; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--lime), transparent);
+    opacity: 0; transition: opacity .35s;
+  }
+  .svc:hover { transform: translateY(-6px); border-color: rgba(205,255,74,.35); background: var(--surface-2);
+               box-shadow: 0 20px 50px rgba(0,0,0,.4); }
+  .svc:hover::before { opacity: 1; }
+  .svc-ix {
+    font-family: 'Geist Mono', monospace; font-size: .8rem; color: var(--lime-dim);
+    margin-bottom: 1.6rem; display: inline-block; padding: .2rem .6rem;
+    border: 1px solid var(--line); border-radius: 6px;
+  }
+  .svc h3 { font-size: 1.35rem; font-weight: 500; margin-bottom: .8rem; letter-spacing: -.01em; }
+  .svc p { font-size: .98rem; color: var(--text-mid); font-weight: 300; line-height: 1.7; }
+
+  /* ── WORK / PROJECTS ── */
+  .work-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+  .work {
+    padding: 2.2rem; background: var(--bg-soft); border: 1px solid var(--line); border-radius: 18px;
+    transition: transform .35s cubic-bezier(.2,.8,.2,1), border-color .35s, box-shadow .35s;
+    display: flex; flex-direction: column; min-height: 290px;
+  }
+  .work:hover { transform: translateY(-6px); border-color: rgba(255,255,255,.2); box-shadow: 0 20px 50px rgba(0,0,0,.45); }
+  .work-icon {
+    width: 50px; height: 50px; border-radius: 14px; margin-bottom: 1.8rem;
+    display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--lime);
+    background: linear-gradient(135deg, rgba(205,255,74,.12), rgba(205,255,74,.02));
+    border: 1px solid rgba(205,255,74,.18);
+  }
+  .work:nth-child(2) .work-icon { color: var(--cyan); background: linear-gradient(135deg, rgba(94,224,208,.12), rgba(94,224,208,.02)); border-color: rgba(94,224,208,.2); }
+  .work:nth-child(3) .work-icon { color: var(--warm); background: linear-gradient(135deg, rgba(255,122,82,.12), rgba(255,122,82,.02)); border-color: rgba(255,122,82,.2); }
+  .work h3 { font-family: 'Fraunces', serif; font-size: 1.65rem; font-weight: 500; margin-bottom: .7rem; }
+  .work p { font-size: .95rem; color: var(--text-mid); font-weight: 300; line-height: 1.65; flex: 1; }
+  .work-stack { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1.6rem; }
+  .chip {
+    font-family: 'Geist Mono', monospace; font-size: .7rem; letter-spacing: .03em;
+    padding: .3rem .7rem; border-radius: 7px; color: var(--text-mid);
+    background: var(--surface); border: 1px solid var(--line);
+  }
+
+  /* ── APPROACH (replaces heavy "why me") ── */
+  .approach { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+  .approach-visual {
+    aspect-ratio: 1; border-radius: 20px; border: 1px solid var(--line);
+    background:
+      radial-gradient(circle at 30% 30%, rgba(196,240,66,.12), transparent 50%),
+      radial-gradient(circle at 70% 70%, rgba(255,107,71,.08), transparent 50%),
+      var(--bg-soft);
+    display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+  }
+  .approach-visual::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: linear-gradient(var(--line-soft) 1px, transparent 1px), linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size: 36px 36px; mask-image: radial-gradient(circle at center, black, transparent 75%);
+  }
+  .av-core { position: relative; text-align: center; }
+  .av-core .big { font-family: 'Fraunces', serif; font-size: 5rem; font-weight: 500; color: var(--lime); line-height: 1; }
+  .av-core .sub { font-family: 'Geist Mono', monospace; font-size: .8rem; color: var(--text-mid); letter-spacing: .12em; text-transform: uppercase; margin-top: .6rem; }
+  .approach-text h2 { margin-bottom: 1.6rem; }
+  .approach-text p { font-size: 1.02rem; color: var(--text-mid); font-weight: 300; line-height: 1.75; margin-bottom: 1.2rem; }
+  .approach-points { list-style: none; margin-top: 2rem; }
+  .approach-points li { display: flex; gap: .9rem; padding: .8rem 0; border-bottom: 1px solid var(--line-soft); font-size: .95rem; color: var(--text); align-items: baseline; }
+  .approach-points li b { color: var(--text); font-weight: 500; }
+  .approach-points .arr { color: var(--lime); font-family: 'Geist Mono', monospace; }
+
+  /* ── CREDENTIALS STRIP ── */
+  .creds { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+  .cred { padding: 2rem 1.6rem; background: var(--bg); text-align: center; transition: background .3s; }
+  .cred:hover { background: var(--surface); }
+  .cred-big { font-family: 'Fraunces', serif; font-size: 2.6rem; font-weight: 500; line-height: 1; margin-bottom: .5rem; }
+  .cred-big.lime { color: var(--lime); }
+  .cred-label { font-size: .82rem; color: var(--text-mid); font-weight: 300; }
+
+  /* ── CTA ── */
+  .cta { padding: 8rem 0; }
+  .cta-box {
+    border: 1px solid var(--line); border-radius: 24px; padding: 5rem 3rem; text-align: center;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(196,240,66,.1), transparent 60%),
+      var(--bg-soft);
+    position: relative; overflow: hidden;
+  }
+  .cta-box h2 { font-size: clamp(2.2rem, 5vw, 4rem); margin-bottom: 1.2rem; }
+  .cta-box p { font-size: 1.15rem; color: var(--text-mid); font-weight: 300; max-width: 480px; margin: 0 auto 2.6rem; line-height: 1.6; }
+  .cta-links { display: flex; justify-content: center; flex-wrap: wrap; gap: .8rem; }
+
+  /* ── FOOTER ── */
+  footer { border-top: 1px solid var(--line-soft); padding: 2.5rem 0; }
+  .foot-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .foot-inner p { font-family: 'Geist Mono', monospace; font-size: .76rem; color: var(--text-dim); }
+  .foot-links { display: flex; gap: 1.6rem; }
+  .foot-links a { font-size: .82rem; color: var(--text-mid); text-decoration: none; transition: color .2s; }
+  .foot-links a:hover { color: var(--lime); }
+
+  /* ── REVEAL ── */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity .8s cubic-bezier(.2,.8,.2,1), transform .8s cubic-bezier(.2,.8,.2,1); }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 880px) {
+    .wrap { padding: 0 1.4rem; }
+    .nav-inner { padding: 1rem 1.4rem; }
+    .nav-links { display: none; }
+    .hero { padding: 9rem 0 4rem; }
+    .svc-grid { grid-template-columns: 1fr; }
+    .work-grid { grid-template-columns: 1fr; }
+    .approach { grid-template-columns: 1fr; gap: 2.5rem; }
+    .approach-visual { max-width: 320px; margin: 0 auto; }
+    .creds { grid-template-columns: repeat(2, 1fr); }
+    .cta-box { padding: 3.5rem 1.6rem; }
+    section { padding: 4.5rem 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+<div class="glow glow-3"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="#"><span class="logo-dot"></span> M. RADOVČIĆ</a>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#approach">Approach</a></li>
+    </ul>
+    <a class="nav-cta" href="#contact">Get in touch</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- HERO -->
+<header class="hero wrap">
+  <div class="hero-tag"><span class="ping"></span> Available for new projects · EU</div>
+  <h1>Software that <em>understands</em> your factory floor.</h1>
+  <p class="hero-lead">
+    I build custom web applications for pharmaceutical and industrial operations — with deep, first-hand
+    knowledge of GMP manufacturing, quality systems and production data.
+  </p>
+  <div class="hero-actions">
+    <a href="#contact" class="btn btn-primary">Start a conversation →</a>
+    <a href="#work" class="btn btn-line">See the work</a>
+  </div>
+
+  <div class="marquee">
+    <div class="marquee-label">Built with</div>
+    <div class="tech-row">
+      <span>Python</span>
+      <span>Flask</span>
+      <span>PostgreSQL</span>
+      <span>SQLite</span>
+      <span>Docker</span>
+      <span>PWA</span>
+      <span>Gunicorn</span>
+    </div>
+  </div>
+</header>
+
+<!-- SERVICES -->
+<section id="services" class="wrap">
+  <div class="sec-head reveal">
+    <span class="sec-num">01 — Services</span>
+    <h2>What I build</h2>
+    <p class="sec-sub">Tailored applications for teams that have outgrown spreadsheets but don't need bloated enterprise software.</p>
+  </div>
+  <div class="svc-grid">
+    <div class="svc reveal">
+      <div class="svc-ix">/ 01</div>
+      <h3>Compliance-ready systems</h3>
+      <p>Electronic records, audit trails, e-signatures and role-based access designed with regulated environments in mind.</p>
+    </div>
+    <div class="svc reveal">
+      <div class="svc-ix">/ 02</div>
+      <h3>Production & efficiency tracking</h3>
+      <p>Real-time dashboards, OEE metrics and analytics that turn shop-floor activity into clear, actionable insight.</p>
+    </div>
+    <div class="svc reveal">
+      <div class="svc-ix">/ 03</div>
+      <h3>Batch & process management</h3>
+      <p>Structured workflows, versioned data and clean import/export to fit the way your operation already runs.</p>
+    </div>
+    <div class="svc reveal">
+      <div class="svc-ix">/ 04</div>
+      <h3>Internal tools & automation</h3>
+      <p>Lightweight, fast web apps that replace fragile manual processes and scale with your team.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WORK -->
+<section id="work" class="wrap">
+  <div class="sec-head reveal">
+    <span class="sec-num">02 — Selected work</span>
+    <h2>Applications</h2>
+    <p class="sec-sub">A selection of production-grade web applications built for real operational use cases.</p>
+  </div>
+  <div class="work-grid">
+    <div class="work reveal">
+      <div class="work-icon">⬡</div>
+      <h3>MaterialBook</h3>
+      <p>A compliance-focused system for tracking material batches, with full audit history and electronic approvals.</p>
+      <div class="work-stack"><span class="chip">Flask</span><span class="chip">SQLite</span><span class="chip">Bootstrap</span></div>
+    </div>
+    <div class="work reveal">
+      <div class="work-icon">◷</div>
+      <h3>TPM Web App</h3>
+      <p>A maintenance-tracking platform with scheduled notifications, reporting and offline-capable access.</p>
+      <div class="work-stack"><span class="chip">Flask</span><span class="chip">PostgreSQL</span><span class="chip">Docker</span></div>
+    </div>
+    <div class="work reveal">
+      <div class="work-icon">▦</div>
+      <h3>PackLog</h3>
+      <p>A packaging-line tracker with efficiency metrics and visual analytics across machines and shifts.</p>
+      <div class="work-stack"><span class="chip">Flask</span><span class="chip">Chart.js</span><span class="chip">PWA</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- APPROACH -->
+<section id="approach" class="wrap">
+  <div class="approach">
+    <div class="approach-text reveal">
+      <span class="sec-num">03 — Approach</span>
+      <h2>Industry context, built in.</h2>
+      <p>
+        I bring a decade in pharmaceutical operations to every project — so we spend less time translating
+        requirements and more time building the right thing.
+      </p>
+      <ul class="approach-points">
+        <li><span class="arr">→</span> <span><b>Fluent in the domain</b> — GMP, quality systems, batch records, validation.</span></li>
+        <li><span class="arr">→</span> <span><b>Lean by default</b> — no unnecessary complexity, no vendor lock-in.</span></li>
+        <li><span class="arr">→</span> <span><b>Direct collaboration</b> — you work with the person building it.</span></li>
+      </ul>
+    </div>
+    <div class="approach-visual reveal">
+      <div class="av-core">
+        <div class="big">10+</div>
+        <div class="sub">Years in industry</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CREDENTIALS -->
+<section class="wrap" style="padding-top:0;">
+  <div class="creds reveal">
+    <div class="cred"><div class="cred-big lime">MSc</div><div class="cred-label">Bioprocess Engineering</div></div>
+    <div class="cred"><div class="cred-big">GMP</div><div class="cred-label">Manufacturing & quality</div></div>
+    <div class="cred"><div class="cred-big">3+</div><div class="cred-label">Production applications</div></div>
+    <div class="cred"><div class="cred-big">EU</div><div class="cred-label">Remote-first delivery</div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contact" class="cta wrap">
+  <div class="cta-box reveal">
+    <h2>Let's build something.</h2>
+    <p>Have a process that deserves better than a spreadsheet? Let's talk — no commitment.</p>
+    <div class="cta-links">
+      <a href="mailto:mradovcic84@gmail.com" class="btn btn-primary">✉ Email me</a>
+      <a href="https://www.linkedin.com/in/mate-radovcic" target="_blank" rel="noopener" class="btn btn-line">LinkedIn</a>
+      <a href="https://github.com/mradovcic84" target="_blank" rel="noopener" class="btn btn-line">GitHub</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap foot-inner">
+    <p>© 2026 Mate Radovčić — Industrial Python Consultant</p>
+    <div class="foot-links">
+      <a href="mailto:mradovcic84@gmail.com">Email</a>
+      <a href="https://www.linkedin.com/in/mate-radovcic" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/mradovcic84" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transitionDelay = `${(i % 4) * 0.07}s`;
+    io.observe(el);
+  });
+</script>
+
+</body>
+</html>
